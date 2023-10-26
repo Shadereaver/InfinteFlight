@@ -1,11 +1,11 @@
 #pragma once
 
-class Player
+class Entity
 {
 	int mHealth;
 public:
 	int getHealth() const;
 	void setHealth(const int& newHealth);
 
-	Player();
+	Entity();
 };

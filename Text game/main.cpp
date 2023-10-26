@@ -1,12 +1,7 @@
-#include <iostream>
-#include <string>
-#include "Player.h"
+#include "main.h"
 
 void main()
 {
-    bool bRunning = true;
-    std::string input = "";
-
 	std::cout << " _____ _   _  _____   _____   ___  ___  ___ _____ \n"
               << "|_   _| | | ||  ___| |  __ \\ / _ \\ |  \\/  ||  ___|\n"
               << "  | | | |_| || |__   | |  \\// /_\\ \\| .  . || |__  \n"
@@ -16,10 +11,9 @@ void main()
 
     do
     {
-	    std::cout << "\n[1] Start game\n[2] Commands/controls\n[3] Quit\n\n>";
-        std::cin >> input;
+        int menuChoice = validatedNumericInput("\n[1] Start game\n[2] Commands/controls\n[3] Quit\n\n>");
 
-	    switch (stoi(input))
+	    switch (menuChoice)
 	    {
 	    case 1:
 
@@ -35,33 +29,25 @@ void main()
             break;
 
 	    default:
-
+            std::cout << "\nInvalid choice\n";
             break;
 	    }
     } while (bRunning);
+}
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-    std::cout << "\n\n\n";
-    int nums[5] = {1,2,3,4,5};
-
-
-    for (int num : nums)
+int validatedNumericInput(const std::string& stringToOutput)
+{
+    std::string input = "";
+    do
     {
-	    int altNum = num * 5;
+        std::cout << stringToOutput;
+        std::cin >> input;
 
-        std::cout << altNum << "\n";
-    }
+        if (input.find_first_not_of("0123456789") != std::string::npos)
+            std::cout << "\nInvalid input\n";
+
+    } while (input.find_first_not_of("0123456789") != std::string::npos);
+
+    return stoi(input);
 }
