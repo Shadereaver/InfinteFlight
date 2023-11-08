@@ -24,7 +24,9 @@ void initialise()
 	gameData.bRunning = true;
     gameData.gameName = "Untitled";
     gameData.scene = eMainMenu;
-    gameData.numberOfChoices = 0;
+    gameData.availableChoices = {};
+
+    mainMenuText();
 }
 
 std::string input()
@@ -33,9 +35,14 @@ std::string input()
 
     getInput(action);
 
+    for (int i = 0; i < action.size(); ++i)
+    {
+        action[i] = tolower(action[i]);
+    }
+
     while (!validInput(action))
     {
-	    std::cout << "\nInvalid";
+	    std::cout << "\nInvalid\n\n";
         std::cin.clear();
         std::cin.ignore(1000, '\n');
 
@@ -47,6 +54,9 @@ std::string input()
 
 int update(const std::string& action)
 {
+    if (gameData.scene == eMainMenu)
+        return mainMenu(action);
+
 	return 0;
 }
 
@@ -55,10 +65,15 @@ void display()
 
 }
 
-int mainMenu()
+int mainMenu(const std::string& action)
 {
-    bool menuLoop = true;
+    mainMenuText();
 
+    return 0;
+}
+
+void mainMenuText()
+{
     std::cout << " _____ _   _  _____   _____   ___  ___  ___ _____ \n"
               << "|_   _| | | ||  ___| |  __ \\ / _ \\ |  \\/  ||  ___|\n"
               << "  | | | |_| || |__   | |  \\// /_\\ \\| .  . || |__  \n"
@@ -66,14 +81,7 @@ int mainMenu()
               << "  | | | | | || |___  | |_\\ \\| | | || |  | || |___ \n"
               << "  \\_/ \\_| |_/\\____/   \\____/\\_| |_/\\_|  |_/\\____/ \n";
 
-    while (menuLoop)
-    {  
-        std::cout << "\n--------------\nStart new game\nLoad game\nQuit\n--------------\n>";
-
-        
-    }
-
-    return 0;
+    std::cout << "\n--------------\nStart new game\nLoad game\nQuit\n--------------\n";
 }
 
 int newGame()
@@ -90,16 +98,22 @@ int loadGame()
 //Utility functions
 bool validInput(const std::string& action)
 {
+    if (action == "start new game")
+        return true;
+
+    if (action == "load game")
+        return true;
+
+    if (action == "quit")
+        return true;
+
 	if (action == "inventory")
         return true;
 
     if (action == "pause")
         return true;
 
-    if (action.find_first_not_of("0123456789") != std::string::npos)
-        return false;
-
-    if (stoi(action) > 0 && stoi(action) <= gameData.numberOfChoices)
+    if (std::find(gameData.availableChoices.begin(), gameData.availableChoices.end(), action) != gameData.availableChoices.end())
         return true;
 
     return false;
