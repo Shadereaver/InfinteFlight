@@ -3,13 +3,58 @@
 //Main loop
 int main()
 {
-    do
+    initialise();
+
+    while (gameData.bRunning)
     {
-        mainMenu();
-    } while (bRunning);
+        const std::string action = input();
+
+        const int errorCode =  update(action);
+
+        if (errorCode != 0)
+            return errorCode;
+
+        display();
+    }
 }
 
-//Main menu functions
+//Main functions
+void initialise()
+{
+	gameData.bRunning = true;
+    gameData.gameName = "Untitled";
+    gameData.scene = eMainMenu;
+    gameData.numberOfChoices = 0;
+}
+
+std::string input()
+{
+    std::string action = "";
+
+    getInput(action);
+
+    while (!validInput(action))
+    {
+	    std::cout << "\nInvalid";
+        std::cin.clear();
+        std::cin.ignore(1000, '\n');
+
+        getInput(action);
+    }
+
+	return action;
+}
+
+int update(const std::string& action)
+{
+	return 0;
+}
+
+void display()
+{
+
+}
+
 int mainMenu()
 {
     bool menuLoop = true;
@@ -23,36 +68,9 @@ int mainMenu()
 
     while (menuLoop)
     {  
-        std::cout << "\n[1] Start new game\n[2] Load game\n[3] Quit\n\n>";
+        std::cout << "\n--------------\nStart new game\nLoad game\nQuit\n--------------\n>";
 
-        std::string input;
-        std::cin >> input;
-
-        if (!validateNumericInput(input))
-            continue;
-
-        int menuChoice = stoi(input);
-
-        switch (menuChoice)
-        {
-        case 1:
-            return newGame();
-            break;
-
-        case 2:
-            return loadGame();
-            break;
-
-        case 3:
-            bRunning = false;
-            menuLoop = false;
-            std::cout << "\nThanks for playing\n.";
-            break;
-
-        default:
-            std::cout << "\nInvalid\n";
-            break;
-        }
+        
     }
 
     return 0;
@@ -68,16 +86,29 @@ int loadGame()
     return false;
 }
 
-//Utility functions
-bool validateNumericInput(const std::string& input)
-{
-    if (input.find_first_not_of("0123456789") != std::string::npos)
-    {
-        std::cout << "\nInvalid\n";
-        return false;
-    }
 
-    return true;
+//Utility functions
+bool validInput(const std::string& action)
+{
+	if (action == "inventory")
+        return true;
+
+    if (action == "pause")
+        return true;
+
+    if (action.find_first_not_of("0123456789") != std::string::npos)
+        return false;
+
+    if (stoi(action) > 0 && stoi(action) <= gameData.numberOfChoices)
+        return true;
+
+    return false;
+}
+
+void getInput(std::string& action)
+{
+    std::cout << "Make your choice\n>";
+	std::cin >> action;
 }
 
 bool loadFile(const std::string& fileName)
@@ -88,7 +119,7 @@ bool loadFile(const std::string& fileName)
     if (!file.is_open() || !file.good())
         return false;
 
-    std::getline(file, gameName);
+    std::getline(file, gameData.gameName);
 
     file.close();
     return true;
@@ -102,7 +133,7 @@ bool saveFile(const std::string& fileName)
     if (!file.is_open() || !file.good())
         return false;
 
-    file << gameName;
+    file << gameData.gameName;
 
     return true;
 }
