@@ -12,13 +12,23 @@ enum Scene
 	eMainMenu,
 	ePlaying,
 	ePause,
-	eInventory
+	eInventory,
+	eNewGame,
+	eLoadGame
+};
+
+enum SubScene
+{
+	eNewGameName,
+	eNewGameOverwrite
 };
 
 struct GameData
 {
 	bool bRunning;
+	bool bRestrictedInput;
 	Scene scene;
+	SubScene subScene;
 	std::vector<std::string> availableChoices;
 	std::string gameName;
 } gameData;
@@ -29,6 +39,7 @@ bool saveFile(const std::string& fileName);
 bool validInput(const std::string& action);
 void getInput(std::string& action);
 void mainMenuText();
+void removeAvailableChoices(const int& numOfElementsToRemove);
 
 //Main functions
 void initialise();
@@ -36,5 +47,5 @@ std::string input();
 int update(const std::string& action);
 void display();
 int mainMenu(const std::string& action);
-int newGame();
-int loadGame();
+int newGame(const std::string& action);
+int loadGame(const std::string& action);

@@ -23,7 +23,9 @@ void initialise()
 {
 	gameData.bRunning = true;
     gameData.gameName = "Untitled";
+    gameData.bRestrictedInput = true;
     gameData.scene = eMainMenu;
+    gameData.subScene = eNewGameName;
     gameData.availableChoices = {};
 
     mainMenuText();
@@ -35,16 +37,16 @@ std::string input()
 
     getInput(action);
 
-    for (int i = 0; i < action.size(); ++i)
+    for (char& i : action)
     {
-        action[i] = tolower(action[i]);
+	    i = static_cast<char>(tolower(i));
     }
 
-    while (!validInput(action))
+    while (!validInput(action) && gameData.bRestrictedInput)
     {
 	    std::cout << "\nInvalid\n\n";
-        std::cin.clear();
-        std::cin.ignore(1000, '\n');
+        //std::cin.clear();
+        //std::cin.ignore(1000, '\n');
 
         getInput(action);
     }
@@ -55,23 +57,101 @@ std::string input()
 int update(const std::string& action)
 {
     if (gameData.scene == eMainMenu)
-        return mainMenu(action);
+	    return mainMenu(action);
+
+    if (gameData.scene == eNewGame)
+        return newGame(action);
+
+    if (gameData.scene == eLoadGame)
+	    return loadGame(action);
 
 	return 0;
 }
 
 void display()
 {
+    if (gameData.bRunning == false)
+	    std::cout << "\nThanks for playing!\n";
 
+    else if (gameData.scene == eMainMenu)
+        mainMenuText();
+
+    else if (gameData.subScene == eNewGameName)
+	    std::cout << "\n-------------\n"
+				  "Choose a name\n";
+
+    else if (gameData.subScene == eNewGameOverwrite)
+        std::cout << "\n------------------------------------------\n"
+					 "This will overwrite a save, are you sure?\n";
 }
 
 int mainMenu(const std::string& action)
 {
-    mainMenuText();
+    if (action == "start new game")
+    {
+        gameData.bRestrictedInput = false;
+	    gameData.scene = eNewGame;
+    }
+
+    else if (action == "load game")
+    {
+        gameData.bRestrictedInput = false;
+	    gameData.scene = eLoadGame;
+    }
+
+    else if (action == "quit")
+	    gameData.bRunning = false;
+
+    else
+        return 1;
 
     return 0;
 }
 
+int newGame(const std::string& action)
+{
+    if (gameData.subScene == eNewGameOverwrite && action == "yes")
+    {
+        removeAvailableChoices(2);
+        gameData.scene = ePlaying;
+	    return 0;
+    }
+
+    if (gameData.subScene == eNewGameOverwrite && action == "no")
+    {
+	    gameData.subScene = eNewGameName;
+        gameData.bRestrictedInput = false;
+        removeAvailableChoices(2);
+        return 0;
+    }
+
+    if (loadFile(action))
+    {
+	    gameData.subScene = eNewGameOverwrite;
+        gameData.bRestrictedInput = true;
+        gameData.availableChoices.emplace_back("yes");
+        gameData.availableChoices.emplace_back("no");
+        return 0;
+    }
+
+    gameData.gameName = action;
+    gameData.bRestrictedInput = true;
+
+    if (!saveFile(action))
+        return 2;
+
+    gameData.scene = ePlaying;
+
+    return 0;
+}
+
+int loadGame(const std::string& action)
+{
+    return false;
+}
+
+
+//Utility functions
 void mainMenuText()
 {
     std::cout << " _____ _   _  _____   _____   ___  ___  ___ _____ \n"
@@ -84,18 +164,6 @@ void mainMenuText()
     std::cout << "\n--------------\nStart new game\nLoad game\nQuit\n--------------\n";
 }
 
-int newGame()
-{
-    return false;
-}
-
-int loadGame()
-{
-    return false;
-}
-
-
-//Utility functions
 bool validInput(const std::string& action)
 {
     if (action == "start new game")
@@ -105,7 +173,7 @@ bool validInput(const std::string& action)
         return true;
 
     if (action == "quit")
-        return true;
+	    return true;
 
 	if (action == "inventory")
         return true;
@@ -121,14 +189,14 @@ bool validInput(const std::string& action)
 
 void getInput(std::string& action)
 {
-    std::cout << "Make your choice\n>";
-	std::cin >> action;
+    std::cout << ">";
+	std::getline(std::cin, action);
 }
 
 bool loadFile(const std::string& fileName)
 {
     std::ifstream file;
-    file.open(fileName);
+    file.open("Saves/" + fileName + ".txt");
 
     if (!file.is_open() || !file.good())
         return false;
@@ -142,12 +210,21 @@ bool loadFile(const std::string& fileName)
 bool saveFile(const std::string& fileName)
 {
     std::ofstream file;
-    file.open(fileName);
+    file.open("Saves/" + fileName + ".txt");
 
     if (!file.is_open() || !file.good())
         return false;
 
     file << gameData.gameName;
 
+    file.close();
     return true;
+}
+
+void removeAvailableChoices(const int & numOfElementsToRemove)
+{
+    for (int i = 0; i < numOfElementsToRemove; ++i)
+    {
+	    gameData.availableChoices.pop_back();
+    }
 }
