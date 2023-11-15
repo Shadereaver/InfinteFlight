@@ -201,7 +201,7 @@ bool loadFile(const std::string& fileName)
     if (!file.is_open() || !file.good())
         return false;
 
-    std::getline(file, gameData.gameName);
+    file >> gameData;
 
     file.close();
     return true;
@@ -215,7 +215,7 @@ bool saveFile(const std::string& fileName)
     if (!file.is_open() || !file.good())
         return false;
 
-    file << gameData.gameName;
+    file << gameData;
 
     file.close();
     return true;

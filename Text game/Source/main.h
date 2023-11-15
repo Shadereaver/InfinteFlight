@@ -5,6 +5,7 @@
 #include <string>
 #include <fstream>
 #include <vector>
+#include <nlohmann/json.hpp>
 
 //Game data
 enum Scene
@@ -31,7 +32,18 @@ struct GameData
 	SubScene subScene;
 	std::vector<std::string> availableChoices;
 	std::string gameName;
+
+	friend std::ostream& operator<<(std::ostream& os, const GameData& gameData)
+	{
+		return os << gameData.gameName;
+	}
+
+	friend std::istream& operator >>(std::istream& is, GameData& gameData)
+	{
+		return is >> gameData.gameName;
+	}
 } gameData;
+
 
 //Utility functions
 bool loadFile(const std::string& fileName);
