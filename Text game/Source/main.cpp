@@ -24,8 +24,7 @@ void initialise()
 	gameData.bRunning = true;
     gameData.gameName = "Untitled";
     gameData.bRestrictedInput = true;
-    gameData.scene = eMainMenu;
-    gameData.subScene = eNewGameName;
+    gameData.screen = eMainMenu;
     gameData.availableChoices = {};
 
     mainMenuText();
@@ -56,13 +55,13 @@ std::string input()
 
 int update(const std::string& action)
 {
-    if (gameData.scene == eMainMenu)
+    if (gameData.screen == eMainMenu)
 	    return mainMenu(action);
 
-    if (gameData.scene == eNewGame)
+    if (gameData.screen == eNewGameName || gameData.screen == eNewGameOverwrite)
         return newGame(action);
 
-    if (gameData.scene == eLoadGame)
+    if (gameData.screen == eLoadGame)
 	    return loadGame(action);
 
 	return 0;
@@ -73,14 +72,14 @@ void display()
     if (gameData.bRunning == false)
 	    std::cout << "\nThanks for playing!\n";
 
-    else if (gameData.scene == eMainMenu)
+    else if (gameData.screen == eMainMenu)
         mainMenuText();
 
-    else if (gameData.subScene == eNewGameName)
+    else if (gameData.screen == eNewGameName)
 	    std::cout << "\n-------------\n"
 				  "Choose a name\n";
 
-    else if (gameData.subScene == eNewGameOverwrite)
+    else if (gameData.screen == eNewGameOverwrite)
         std::cout << "\n------------------------------------------\n"
 					 "This will overwrite a save, are you sure?\n";
 }
@@ -90,13 +89,13 @@ int mainMenu(const std::string& action)
     if (action == "start new game")
     {
         gameData.bRestrictedInput = false;
-	    gameData.scene = eNewGame;
+	    gameData.screen = eNewGameName;
     }
 
     else if (action == "load game")
     {
         gameData.bRestrictedInput = false;
-	    gameData.scene = eLoadGame;
+	    gameData.screen = eLoadGame;
     }
 
     else if (action == "quit")
@@ -110,16 +109,16 @@ int mainMenu(const std::string& action)
 
 int newGame(const std::string& action)
 {
-    if (gameData.subScene == eNewGameOverwrite && action == "yes")
+    if (gameData.screen == eNewGameOverwrite && action == "yes")
     {
         removeAvailableChoices(2);
-        gameData.scene = ePlaying;
+        gameData.screen = ePlaying;
 	    return 0;
     }
 
-    if (gameData.subScene == eNewGameOverwrite && action == "no")
+    if (gameData.screen == eNewGameOverwrite && action == "no")
     {
-	    gameData.subScene = eNewGameName;
+	    gameData.screen = eNewGameName;
         gameData.bRestrictedInput = false;
         removeAvailableChoices(2);
         return 0;
@@ -127,7 +126,7 @@ int newGame(const std::string& action)
 
     if (loadFile(action))
     {
-	    gameData.subScene = eNewGameOverwrite;
+	    gameData.screen = eNewGameOverwrite;
         gameData.bRestrictedInput = true;
         gameData.availableChoices.emplace_back("yes");
         gameData.availableChoices.emplace_back("no");
@@ -140,7 +139,7 @@ int newGame(const std::string& action)
     if (!saveFile(action))
         return 2;
 
-    gameData.scene = ePlaying;
+    gameData.screen = ePlaying;
 
     return 0;
 }
@@ -228,3 +227,5 @@ void removeAvailableChoices(const int & numOfElementsToRemove)
 	    gameData.availableChoices.pop_back();
     }
 }
+
+

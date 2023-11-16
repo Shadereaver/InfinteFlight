@@ -5,45 +5,42 @@
 #include <string>
 #include <fstream>
 #include <vector>
-#include <nlohmann/json.hpp>
 
 //Game data
-enum Scene
+enum Screen
 {
 	eMainMenu,
 	ePlaying,
 	ePause,
 	eInventory,
-	eNewGame,
-	eLoadGame
-};
-
-enum SubScene
-{
 	eNewGameName,
-	eNewGameOverwrite
+	eNewGameOverwrite,
+	eLoadGame
 };
 
 struct GameData
 {
 	bool bRunning;
 	bool bRestrictedInput;
-	Scene scene;
-	SubScene subScene;
+	Screen screen;
 	std::vector<std::string> availableChoices;
 	std::string gameName;
 
-	friend std::ostream& operator<<(std::ostream& os, const GameData& gameData)
-	{
-		return os << gameData.gameName;
-	}
-
-	friend std::istream& operator >>(std::istream& is, GameData& gameData)
-	{
-		return is >> gameData.gameName;
-	}
+	friend std::ifstream& operator>>(const std::ifstream& is, GameData& data);
+	friend std::ofstream& operator<<(std::ofstream& os, const GameData& data);
 } gameData;
 
+std::ifstream& operator>>(std::ifstream& is, GameData& data)
+{
+	is >> data.gameName;
+    return is;
+}
+
+std::ofstream& operator<<(std::ofstream& os, const GameData& data)
+{
+    os << data.gameName << "\n";
+    return os;
+}
 
 //Utility functions
 bool loadFile(const std::string& fileName);
