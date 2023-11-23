@@ -2,29 +2,38 @@
 
 #include <iostream>
 #include <fstream>
+#include <filesystem>
 
 MainProgram::MainProgram()
 {
-	bRunning = true;
+	m_bRunning = true;
 }
 
 int MainProgram::run()
 {
-	title();
+	m_title();
 	std::cout << "Press [enter] to start\n";
 	std::cin.get();
 
-	displayReadMe();
+	m_displayReadMe();
 
-	while (bRunning)
+	std::cout << "\nReady?";
+	m_input();
+
+	if (m_action == "no")
+		m_bRunning = false;
+
+	while (m_bRunning)
 	{
 
 	}
 
+	std::cout << "Thanks for playing";
+
 	return 0;
 }
 
-void MainProgram::title() const
+void MainProgram::m_title() const
 {
 	std::cout << " _____          __  _         _  _            __  _  _         _      _\n"
 			  << "|_   _|        / _|(_)       (_)| |          / _|| |(_)       | |    | |\n"
@@ -36,14 +45,9 @@ void MainProgram::title() const
 			  << "                                                        |___/\n\n";
 }
 
-void MainProgram::displayReadMe() const
+void MainProgram::m_displayReadMe() const
 {
-	std::ifstream readMe;
-
-	readMe.open("../../Readme.txt");
-
-	if (readMe.fail())
-		std::cout << "bob";
+	std::ifstream readMe("../Readme.txt");
 
 	std::string line;
 	while (getline(readMe, line))
@@ -54,9 +58,14 @@ void MainProgram::displayReadMe() const
 	readMe.close();
 }
 
-void MainProgram::input()
+void MainProgram::m_input()
 {
 	std::cout << "\n>";
 
-	std::cin >> action;
+	std::cin >> m_action;
+
+	for (char& i: m_action)
+	{
+		i = tolower(i);
+	}
 }

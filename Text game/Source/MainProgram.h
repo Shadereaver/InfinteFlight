@@ -9,10 +9,10 @@ public:
 	int run();
 
 private:
-	void title() const;
-	void displayReadMe() const;
-	void input();
+	void m_title() const;
+	void m_displayReadMe() const;
+	void m_input();
 
-	bool bRunning;
-	std::string action;
+	bool m_bRunning;
+	std::string m_action;
 };
