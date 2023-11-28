@@ -16,9 +16,15 @@ public:
 	int run();
 
 private:
-	void m_displayReadMe() const;
 	void m_input();
-	void m_setDifficulty();
+	void m_continue();
+
+	void m_displayReadMe() const;
+	void m_seperator();
+
+	void m_takeoff();
+	void m_engine(bool& bDoorLock);
+	void m_flaps();
 
 	bool m_bRunning;
 	std::string m_title;
