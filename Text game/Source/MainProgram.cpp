@@ -4,6 +4,8 @@
 #include <fstream>
 #include <filesystem>
 
+#include "Events/Events.h"
+
 MainProgram::MainProgram()
 {
 	m_bRunning = false;
@@ -84,7 +86,7 @@ int MainProgram::run()
 
 	m_seperator();
 	std::cout << "You are in the air and hear over the radio \"ATTENTION ALL PILOTS DO NOT LAND\""
-				 "\nfollowed by groans, growls, screams, and finaly static, your infinite journey starts.\n";
+				 "\nfollowed by sirens, growls, screams, and finaly static, your infinite journey starts.\n";
 
 	while (m_bRunning)
 	{
@@ -97,6 +99,12 @@ int MainProgram::run()
 void MainProgram::m_displayReadMe() const
 {
 	std::ifstream readMe("../Readme.txt");
+
+	if (!readMe.is_open() || !readMe.good())
+	{
+		std::cout << "\n\n//Unable to read \"readme.txt\"//\n\n";
+		return;
+	}
 
 	std::string line;
 	while (getline(readMe, line))
