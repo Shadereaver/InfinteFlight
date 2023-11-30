@@ -2,7 +2,7 @@
 
 #include <iostream>
 #include <fstream>
-#include <filesystem>
+#include <memory>
 
 #include "Events/Events.h"
 
@@ -87,10 +87,16 @@ int MainProgram::run()
 	m_seperator();
 	std::cout << "You are in the air and hear over the radio \"ATTENTION ALL PILOTS DO NOT LAND\""
 				 "\nfollowed by sirens, growls, screams, and finaly static, your infinite journey starts.\n";
+	m_seperator();
 
+	m_bRunning = true;
 	while (m_bRunning)
 	{
+		std::unique_ptr<EventBase> event;
 
+		event = m_eventCreator();
+
+		event.get()->printEventText();
 	}
 
 	return 0;
@@ -272,4 +278,9 @@ void MainProgram::m_flaps()
 void MainProgram::m_seperator()
 {
 	std::cout << "-----------------------------------------------------------------\n";
+}
+
+std::unique_ptr<EventBase> MainProgram::m_eventCreator()
+{
+	return std::make_unique<Alien>();
 }

@@ -19,11 +19,21 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Events\Alien\Alien.cpp" />
+    <ClCompile Include="Source\Events\EventBase.cpp" />
     <ClCompile Include="Source\Main.cpp" />
     <ClCompile Include="Source\MainProgram.cpp" />
+    <ClCompile Include="Source\Events\Standard\StandardSafe.cpp" />
+    <ClCompile Include="Source\Events\Standard\StandardUnsafe.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Events\Alien\Alien.h" />
+    <ClInclude Include="Source\Events\Random nums\RandomNums.h" />
+    <ClInclude Include="Source\Events\EventBase.h" />
+    <ClInclude Include="Source\Events\Events.h" />
     <ClInclude Include="Source\MainProgram.h" />
+    <ClInclude Include="Source\Events\Standard\StandardSafe.h" />
+    <ClInclude Include="Source\Events\Standard\StandardUnsafe.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

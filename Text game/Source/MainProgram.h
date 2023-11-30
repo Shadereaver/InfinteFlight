@@ -1,6 +1,9 @@
 #pragma once
 
 #include <string>
+#include <memory>
+
+#include "Events/EventBase.h"
 
 enum Difficulty
 {
@@ -25,6 +28,8 @@ private:
 	void m_takeoff();
 	void m_engine(bool& bDoorLock);
 	void m_flaps();
+
+	std::unique_ptr<EventBase> m_eventCreator();
 
 	bool m_bRunning;
 	std::string m_title;

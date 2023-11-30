@@ -3,5 +3,5 @@
 class Alien : public EventBase
 {
 	void printEventText() const override;
-	void eventResult() const override;
+	WinCondition eventResult(std::string action) const override;
 };
