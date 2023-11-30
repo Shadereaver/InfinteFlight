@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClCompile Include="Source\Events\Alien\Alien.cpp" />
     <ClCompile Include="Source\Events\EventBase.cpp" />
+    <ClCompile Include="Source\Events\Random nums\RandomNums.cpp" />
     <ClCompile Include="Source\Main.cpp" />
     <ClCompile Include="Source\MainProgram.cpp" />
     <ClCompile Include="Source\Events\Standard\StandardSafe.cpp" />

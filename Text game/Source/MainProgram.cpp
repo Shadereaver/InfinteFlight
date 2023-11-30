@@ -5,6 +5,7 @@
 #include <memory>
 
 #include "Events/Events.h"
+#include "Events/Random nums/RandomNums.h"
 
 MainProgram::MainProgram()
 {
@@ -86,17 +87,47 @@ int MainProgram::run()
 
 	m_seperator();
 	std::cout << "You are in the air and hear over the radio \"ATTENTION ALL PILOTS DO NOT LAND\""
-				 "\nfollowed by sirens, growls, screams, and finaly static, your infinite journey starts.\n";
+				 "\nfollowed by sirens, growls, screams, and finaly static, your infinite journey starts.\n\n";
 	m_seperator();
 
 	m_bRunning = true;
 	while (m_bRunning)
 	{
-		std::unique_ptr<EventBase> event;
+		std::shared_ptr<EventBase> event = m_eventCreator();
 
-		event = m_eventCreator();
+		event->printEventText();
 
-		event.get()->printEventText();
+		m_input();
+
+		if (m_action == "quit")
+		{
+			m_bRunning = false;
+			return 0;
+		}
+
+		const WinCondition condition = event->eventResult(m_action);
+
+		std::cout << '\n';
+
+		switch(condition)
+		{
+		case eDeath:
+			m_continue();
+			m_bRunning = false;
+
+			return 1;
+
+		case eSurvive:
+			m_continue();
+
+			break;
+
+		case eWin:
+			m_continue();
+			m_bRunning = false;
+
+			return 1;
+		}
 	}
 
 	return 0;
@@ -280,7 +311,53 @@ void MainProgram::m_seperator()
 	std::cout << "-----------------------------------------------------------------\n";
 }
 
-std::unique_ptr<EventBase> MainProgram::m_eventCreator()
+std::shared_ptr<EventBase> MainProgram::m_eventCreator()
 {
-	return std::make_unique<Alien>();
+	const int eventNum = randNums();
+
+	switch (m_difficulty)
+	{
+	case eEasy:
+		if (eventNum  <= 10)
+		{
+			return std::make_shared<Alien>();
+		}
+
+		else
+		{
+			return std::make_shared<StandardSafe>();
+		}
+
+	case eNormal:
+		if (eventNum  <= 10)
+		{
+			return std::make_shared<Alien>();
+		}
+
+		else if (eventNum <= 60)
+		{
+			return std::make_shared<StandardSafe>();
+		}
+
+		else
+		{
+			return std::make_shared<StandardUnsafe>();
+		}
+
+	case eHard:
+		if (eventNum  <= 10)
+		{
+			return std::make_shared<Alien>();
+		}
+
+		else if (eventNum <= 40)
+		{
+			return std::make_shared<StandardSafe>();
+		}
+
+		else
+		{
+			return std::make_shared<StandardUnsafe>();
+		}
+	}
 }

@@ -100,7 +100,7 @@ WinCondition StandardSafe::eventResult(std::string action) const
 			return eSurvive;
 		}
 
-		else if (action == "tie them up")
+		else if (action == "tie them up" || action == "tie")
 		{
 			std::cout << "You tie the passenger up.";
 			return eSurvive;

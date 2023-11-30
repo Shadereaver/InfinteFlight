@@ -33,6 +33,9 @@
     <ClCompile Include="Source\Events\Alien\Alien.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Events\Random nums\RandomNums.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\MainProgram.h">

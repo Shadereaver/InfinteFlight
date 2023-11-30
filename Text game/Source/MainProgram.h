@@ -29,7 +29,7 @@ private:
 	void m_engine(bool& bDoorLock);
 	void m_flaps();
 
-	std::unique_ptr<EventBase> m_eventCreator();
+	std::shared_ptr<EventBase> m_eventCreator();
 
 	bool m_bRunning;
 	std::string m_title;
